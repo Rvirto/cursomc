@@ -2,7 +2,9 @@ package com.renatovirto.cursomc.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Produto implements Serializable {
@@ -22,6 +27,11 @@ public class Produto implements Serializable {
 	private String nome;
 	private Double preco;
 	
+	@JsonIgnore
+	@OneToMany(mappedBy = "id.produto")
+	private Set<ItemPedido> itens = new HashSet<>();
+	
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(
 		name = "PRODUTO_CATEGORIA",
@@ -39,6 +49,17 @@ public class Produto implements Serializable {
 		this.id = id;
 		this.nome = nome;
 		this.preco = preco;
+	}
+	
+	@JsonIgnore
+	public List<Pedido> getPedidos() {
+		List<Pedido> listaPedidos = new ArrayList<>();
+		
+		for (ItemPedido pedido : itens) {
+			listaPedidos.add(pedido.getPedido());
+		}
+		
+		return listaPedidos;
 	}
 
 	public List<Categoria> getCategorias() {
@@ -72,6 +93,14 @@ public class Produto implements Serializable {
 	public void setPreco(Double preco) {
 		this.preco = preco;
 	}
+	
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
+	}
 
 	@Override
 	public int hashCode() {
@@ -97,5 +126,5 @@ public class Produto implements Serializable {
 			return false;
 		return true;
 	}
-	
+
 }

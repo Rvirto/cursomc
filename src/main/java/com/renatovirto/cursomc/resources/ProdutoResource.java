@@ -9,33 +9,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.renatovirto.cursomc.domain.Categoria;
+import com.renatovirto.cursomc.domain.Produto;
 import com.renatovirto.cursomc.exceptions.ObjectNotFoundException;
-import com.renatovirto.cursomc.service.CategoriaService;
-
+import com.renatovirto.cursomc.service.ProdutoService;
 
 
 @RestController
-@RequestMapping(value = "/categorias")
-public class CategoriaResource {
+@RequestMapping("/produtos")
+public class ProdutoResource {
 
 	@Autowired
-	private CategoriaService categoriaService;
-
+	private ProdutoService produtoService;
+	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> buscarID(@PathVariable Integer id) throws ObjectNotFoundException {
-
-		Categoria categoria = categoriaService.buscarPeloId(id);
-
-		return ResponseEntity.ok().body(categoria);
+	public ResponseEntity<?> buscarProdutoID(@PathVariable Integer id) throws ObjectNotFoundException {
+		Produto produtoBuscado = produtoService.buscarProdutoPeloId(id);
+		
+		return ResponseEntity.ok().body(produtoBuscado);
 	}
-
+	
 	@RequestMapping(method = RequestMethod.GET)
-	public List<Categoria> buscar() {
-
-		List<Categoria> categorias = categoriaService.buscar();
-
-		return categorias;
+	public List<Produto> buscarProdutos() {
+		return produtoService.buscarTodosProdutos();
 	}
-
 }
